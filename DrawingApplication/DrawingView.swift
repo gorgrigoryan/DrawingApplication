@@ -10,11 +10,26 @@ import UIKit
 
 class DrawingView: UIView {
     
+    enum Mode {
+        case draw
+        case move
+    }
+    
+    var isExistPoint = false
+    
+    var appMode = Mode.draw
+    
+    var initialCenter = CGPoint()
+    
     var tool: UIImageView!
     
     var undoPaths = [DrawingLine]()
     
     var pathArray = [DrawingLine]()
+    
+    var shapeLayerArray = [CAShapeLayer]()
+    
+    var lastShapeLayer = CAShapeLayer()
     
     var isDrawing = true // draw or erase button
     
@@ -36,6 +51,7 @@ class DrawingView: UIView {
             tool.image = UIImage(named: "paintBrush")
             sender.setImage(UIImage(named: "EraserIcon"), for: .normal)
         }
+        
         isDrawing = !isDrawing
     }
     
@@ -68,6 +84,23 @@ class DrawingView: UIView {
         setNeedsDisplay()
     }
     
+    
+    @IBAction func modeChange(_ sender: UIButton) {
+        if appMode == Mode.move {
+            for shapeLayer in shapeLayerArray {
+                shapeLayer.isHidden = true
+            }
+            appMode = Mode.draw
+            setNeedsDisplay()
+        } else {
+            for shapeLayer in shapeLayerArray {
+                shapeLayer.isHidden = false
+            }
+            appMode = Mode.move
+                
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -89,6 +122,7 @@ class DrawingView: UIView {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if appMode == .draw {
         setupPath()
         pathArray.append(DrawingLine(path: path, color: color))
         let touch = touches.first!
@@ -96,19 +130,72 @@ class DrawingView: UIView {
         tool.center = touch.location(in: self)
         setNeedsDisplay()
         undoPaths = []
+        } else {
+            let touch = touches.first!
+//            CATransaction.begin()
+//            CATransaction.setDisableActions(true)
+            
+            
+            if lastShapeLayer.contains(touch.location(in: self)) {
+                isExistPoint = true
+//                lastShapeLayer.position = touch.location(in: self)
+            }
+//            CATransaction.commit()
+//            setNeedsDisplay()
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if appMode == .draw {
         let touch = touches.first!
         tool.center = touch.location(in: self)
         path.addLine(to: touch.location(in: self))
         setNeedsDisplay()
+            } else {
+            if isExistPoint {
+                let touch = touches.first!
+            lastShapeLayer.position = touch.location(in: self)
+                
+            }
+            
+            setNeedsDisplay()
+        }
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if appMode == .draw {
         let touch = touches.first!
         path.addLine(to: touch.location(in: self))
+        appendNewShapeLayer()
         setNeedsDisplay()
+        } else {
+            isExistPoint = false
+        }
+    }
+    
+    private func appendNewShapeLayer() {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = path.cgPath
+        shapeLayer.frame = bounds
+        shapeLayer.strokeColor = color.cgColor
+        shapeLayer.fillColor = nil
+        shapeLayer.lineWidth = brushSize
+        layer.addSublayer(shapeLayer)
+        
+//        shapeLayer.position = CGPoint(x: bounds.minX, y: bounds.minY)
+        shapeLayerArray.append(shapeLayer)
+        let newActions = [
+            "onOrderIn": NSNull(),
+            "onOrderOut": NSNull(),
+            "sublayers": NSNull(),
+            "contents": NSNull(),
+            "bounds": NSNull(),
+        ]
+        
+        shapeLayer.actions = newActions
+        
+        lastShapeLayer = shapeLayer
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -118,17 +205,52 @@ class DrawingView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
+        if appMode == .draw {
         for line in pathArray {
             line.color.setStroke()
             line.path.stroke()
         }
+        } else {
+        
+//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+//        self.addGestureRecognizer(panGesture)
+            
+//        for shapeLayer in shapeLayerArray {
+//
+//            self.layer.addSublayer(shapeLayer)
+//        }
+    }
     }
 }
 
 extension DrawingView: SettingsViewControllerDelegate {
     func settingsViewControllerDidFinish(_ settingsVC: SettingsViewController) {
-        opacity = settingsVC.opacity
-        brushSize = settingsVC.brushSize
-        color = UIColor(red: settingsVC.red, green: settingsVC.green, blue: settingsVC.blue, alpha: opacity)
+        if isDrawing {
+            opacity = settingsVC.opacity
+            brushSize = settingsVC.brushSize
+            color = UIColor(red: settingsVC.red, green: settingsVC.green, blue: settingsVC.blue, alpha: opacity)
+        }
+    }
+    
+    @objc func handlePan(_ recognizer: UIPanGestureRecognizer) {
+        if appMode == .move {
+            let location = recognizer.location(in: self)
+            
+            if lastShapeLayer.hitTest(location) != nil {
+                print("pan")
+                lastShapeLayer.position = location
+            }
+        
+//        if recognizer.state == .began {
+//            self.initialCenter = recognizerView.center
+//        }
+        
+//        if recognizer.state != .cancelled {
+//            let newCenter = CGPoint(x: initialCenter.x + translation.x, y: initialCenter.y + translation.y)
+//            recognizerView.center = newCenter
+//        } else {
+//            recognizerView.center = initialCenter
+//        }
+        }
     }
 }
