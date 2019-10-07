@@ -99,6 +99,7 @@ class DrawingView: UIView {
             for index in shapeLayerArray.indices {
                 if let _ = shapeLayerArray[index].hitTest(touchLocation) {
                     selectedLayer = index
+                    break
                 }
             }
             // TODO: write for cycle for finding needed layer
@@ -126,6 +127,7 @@ class DrawingView: UIView {
             
             CATransaction.begin()
             CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+            
             shapeLayerArray[index].position = touchLocation
             
             CATransaction.commit()
@@ -145,24 +147,28 @@ class DrawingView: UIView {
         }
     }
     
+    private func appendNewShapeLayer() {
+        let shapeLayer = CAShapeLayer()
+        setShapeLayerProperties(shapeLayer)
+        self.layer.addSublayer(shapeLayer)
+        shapeLayerArray.append(shapeLayer)
+        path.removeAllPoints()
+    }
+    
     private func setShapeLayerProperties(_ shapeLayer: CAShapeLayer) {
-        shapeLayer.frame = path.bounds
-        path.apply(CGAffineTransform(translationX: -path.bounds.origin.x, y: -path.bounds.origin.y))
+        
+        let correctedBounds = CGRect(x: path.bounds.origin.x - brushSize / 2, y: path.bounds.origin.y - brushSize / 2, width: path.bounds.size.width + brushSize, height: path.bounds.size.height + brushSize)
+        
+        shapeLayer.bounds = correctedBounds
+        shapeLayer.frame = shapeLayer.bounds//path.bounds
         shapeLayer.path = path.cgPath
         shapeLayer.lineCap = .round
         shapeLayer.lineJoin = .round
         shapeLayer.strokeColor = color.cgColor
         shapeLayer.fillColor = nil
         shapeLayer.lineWidth = brushSize
-        shapeLayer.backgroundColor = UIColor.red.cgColor
-        path.removeAllPoints()
-    }
-    
-    private func appendNewShapeLayer() {
-        let shapeLayer = CAShapeLayer()
-        setShapeLayerProperties(shapeLayer)
-        self.layer.addSublayer(shapeLayer)
-        shapeLayerArray.append(shapeLayer)
+        shapeLayer.borderColor = UIColor.green.cgColor
+        shapeLayer.borderWidth = 1
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
