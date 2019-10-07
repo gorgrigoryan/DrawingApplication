@@ -15,12 +15,10 @@ class DrawingView: UIView {
         case move
     }
     
-    var isExistPoint = false
+    var selectedLayer: Int?
     var appMode = Mode.draw
-    var initialCenter = CGPoint()
     var tool: UIImageView!
     var undoPaths = [DrawingLine]()
-    var pathArray = [DrawingLine]()
     var shapeLayerArray = [CAShapeLayer]()
     var isDrawing = true // draw or erase button
     var color = UIColor.black
@@ -45,10 +43,10 @@ class DrawingView: UIView {
     }
     
     @IBAction func undo(_ sender: UIButton) {
-        guard !pathArray.isEmpty else {
-            return
-        }
-        undoPaths.append(pathArray.removeLast())
+//        guard !pathArray.isEmpty else {
+//            return
+//        }
+//        undoPaths.append(pathArray.removeLast())
         setNeedsDisplay()
     }
     
@@ -56,16 +54,13 @@ class DrawingView: UIView {
         guard !undoPaths.isEmpty else {
             return
         }
-        pathArray.append(undoPaths.removeLast())
+//        pathArray.append(undoPaths.removeLast())
         setNeedsDisplay()
     }
     
     
     @IBAction func modeChange(_ sender: UIButton) {
         let condition = appMode == Mode.move
-        for shapeLayer in shapeLayerArray {
-            shapeLayer.isHidden = condition
-        }
         tool.isHidden = !condition
         appMode = condition ? .draw : .move
         setNeedsDisplay()
@@ -97,15 +92,20 @@ class DrawingView: UIView {
         switch appMode {
         case .draw:
             setupPath()
-            pathArray.append(DrawingLine(path: path, color: color))
             path.move(to: touchLocation)
             tool.center = touchLocation
-            setNeedsDisplay()
             undoPaths = []
         case .move:
+            for index in shapeLayerArray.indices {
+                if let _ = shapeLayerArray[index].hitTest(touchLocation) {
+                    selectedLayer = index
+                }
+            }
             // TODO: write for cycle for finding needed layer
-            setNeedsDisplay()
+            break
+            
         }
+        setNeedsDisplay()
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -117,9 +117,18 @@ class DrawingView: UIView {
             tool.center = touchLocation
             path.addLine(to: touchLocation)
         case .move:
-            if isExistPoint {
-                // TODO: move layer if you find needed layer
+            guard let index = selectedLayer else {
+                return
             }
+            guard index < shapeLayerArray.count, index >= 0 else {
+                return
+            }
+            
+            CATransaction.begin()
+            CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
+            shapeLayerArray[index].position = touchLocation
+            
+            CATransaction.commit()
         }
         setNeedsDisplay()
     }
@@ -132,23 +141,27 @@ class DrawingView: UIView {
             appendNewShapeLayer()
             setNeedsDisplay()
         case .move:
-            isExistPoint = false
+            selectedLayer = nil
         }
     }
     
     private func setShapeLayerProperties(_ shapeLayer: CAShapeLayer) {
+        shapeLayer.frame = path.bounds
+        path.apply(CGAffineTransform(translationX: -path.bounds.origin.x, y: -path.bounds.origin.y))
         shapeLayer.path = path.cgPath
-        shapeLayer.frame = bounds
+        shapeLayer.lineCap = .round
+        shapeLayer.lineJoin = .round
         shapeLayer.strokeColor = color.cgColor
         shapeLayer.fillColor = nil
         shapeLayer.lineWidth = brushSize
+        shapeLayer.backgroundColor = UIColor.red.cgColor
+        path.removeAllPoints()
     }
     
     private func appendNewShapeLayer() {
         let shapeLayer = CAShapeLayer()
         setShapeLayerProperties(shapeLayer)
-        layer.addSublayer(shapeLayer)
-        
+        self.layer.addSublayer(shapeLayer)
         shapeLayerArray.append(shapeLayer)
     }
     
@@ -161,10 +174,8 @@ class DrawingView: UIView {
     override func draw(_ rect: CGRect) {
         switch appMode {
         case .draw:
-            for line in pathArray {
-                line.color.setStroke()
-                line.path.stroke()
-            }
+            path.stroke()
+            color.setStroke()
         case .move:
             break
     }
