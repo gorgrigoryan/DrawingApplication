@@ -17,8 +17,7 @@ class DrawingView: UIView {
     
     var selectedLayer: CAShapeLayer?
     var appMode = Mode.draw
-    var undoPaths = [DrawingLine]()
-//    var shapeLayerArray = [CAShapeLayer]()
+    var undoPaths = [CAShapeLayer]()
     var isDrawing = true // draw or erase button
     var color = UIColor.black
     var brushSize: CGFloat = 10.0
@@ -41,10 +40,15 @@ class DrawingView: UIView {
     }
     
     @IBAction func undo(_ sender: UIButton) {
-//        guard !pathArray.isEmpty else {
-//            return
-//        }
-//        undoPaths.append(pathArray.removeLast())
+        guard var layers = self.layer.sublayers else {
+            return
+        }
+        guard let removeLayer = layers.removeLast() as? CAShapeLayer else {
+            return
+        }
+        
+        removeLayer.removeFromSuperlayer()
+        undoPaths.append(removeLayer)
         setNeedsDisplay()
     }
     
@@ -52,7 +56,8 @@ class DrawingView: UIView {
         guard !undoPaths.isEmpty else {
             return
         }
-//        pathArray.append(undoPaths.removeLast())
+        
+        self.layer.addSublayer(undoPaths.removeLast())
         setNeedsDisplay()
     }
     
@@ -87,13 +92,6 @@ class DrawingView: UIView {
             path.move(to: touchLocation)
             undoPaths = []
         case .move:
-//            for index in shapeLayerArray.indices {
-//                if let _ = shapeLayerArray[index].hitTest(touchLocation) {
-//                    selectedLayer = index
-//                    break
-//                }
-//            }
-            
             guard let layers = self.layer.sublayers else {
                 return
             }
@@ -146,7 +144,6 @@ class DrawingView: UIView {
         let shapeLayer = CAShapeLayer()
         setShapeLayerProperties(shapeLayer)
         self.layer.addSublayer(shapeLayer)
-//        shapeLayerArray.append(shapeLayer)
         path.removeAllPoints()
     }
     
@@ -155,15 +152,13 @@ class DrawingView: UIView {
         let correctedBounds = CGRect(x: path.bounds.origin.x - brushSize / 2, y: path.bounds.origin.y - brushSize / 2, width: path.bounds.size.width + brushSize, height: path.bounds.size.height + brushSize)
         
         shapeLayer.bounds = correctedBounds
-        shapeLayer.frame = shapeLayer.bounds//path.bounds
+        shapeLayer.frame = shapeLayer.bounds
         shapeLayer.path = path.cgPath
         shapeLayer.lineCap = .round
         shapeLayer.lineJoin = .round
         shapeLayer.strokeColor = color.cgColor
         shapeLayer.fillColor = nil
         shapeLayer.lineWidth = brushSize
-        shapeLayer.borderColor = UIColor.green.cgColor
-        shapeLayer.borderWidth = 1
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

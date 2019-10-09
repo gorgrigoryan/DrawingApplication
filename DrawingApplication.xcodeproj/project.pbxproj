@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		63FF6DFF233A196800B6E44D /* DrawingLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF6DFE233A196800B6E44D /* DrawingLine.swift */; };
 		63FF6E01233A3B7800B6E44D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63FF6E00233A3B7800B6E44D /* SettingsViewController.swift */; };
 		E43D9E4D2338AF4B00F15ADF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D9E4C2338AF4B00F15ADF /* AppDelegate.swift */; };
 		E43D9E4F2338AF4B00F15ADF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43D9E4E2338AF4B00F15ADF /* ViewController.swift */; };
@@ -18,7 +17,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		63FF6DFE233A196800B6E44D /* DrawingLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingLine.swift; sourceTree = "<group>"; };
 		63FF6E00233A3B7800B6E44D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		E43D9E492338AF4B00F15ADF /* DrawingApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrawingApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E43D9E4C2338AF4B00F15ADF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 				E43D9E552338AF4E00F15ADF /* LaunchScreen.storyboard */,
 				E43D9E582338AF4E00F15ADF /* Info.plist */,
 				E43D9E4C2338AF4B00F15ADF /* AppDelegate.swift */,
-				63FF6DFE233A196800B6E44D /* DrawingLine.swift */,
 			);
 			path = DrawingApplication;
 			sourceTree = "<group>";
@@ -145,7 +142,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E43D9E5F2339412E00F15ADF /* DrawingView.swift in Sources */,
-				63FF6DFF233A196800B6E44D /* DrawingLine.swift in Sources */,
 				E43D9E4F2338AF4B00F15ADF /* ViewController.swift in Sources */,
 				63FF6E01233A3B7800B6E44D /* SettingsViewController.swift in Sources */,
 				E43D9E4D2338AF4B00F15ADF /* AppDelegate.swift in Sources */,
