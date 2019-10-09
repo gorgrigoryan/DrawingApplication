@@ -148,21 +148,33 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="a2U-MN-uHU">
-                                <rect key="frame" x="62" y="812" width="290" height="50"/>
+                                <rect key="frame" x="22" y="812" width="370" height="50"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fbu-Mt-mAZ">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lok-v9-uql">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="8n2-Zj-2Ly"/>
+                                            <constraint firstAttribute="width" constant="50" id="p7u-b9-0Kf"/>
+                                        </constraints>
+                                        <state key="normal" image="move"/>
+                                        <connections>
+                                            <action selector="changeMode:" destination="xgx-o1-NJB" eventType="touchUpInside" id="DVi-Xm-cy6"/>
+                                            <action selector="modeChange:" destination="gQc-wf-lSc" eventType="touchUpInside" id="WBB-J9-Aly"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fbu-Mt-mAZ">
+                                        <rect key="frame" x="80" y="0.0" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="LqX-57-n8S"/>
                                             <constraint firstAttribute="width" constant="50" id="cGV-KW-0wL"/>
                                         </constraints>
-                                        <state key="normal" image="EraserIcon"/>
+                                        <state key="normal" image="eraser"/>
                                         <connections>
                                             <action selector="erase:" destination="xgx-o1-NJB" eventType="touchUpInside" id="zrb-e1-BOh"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Qoj-9W-PyB">
-                                        <rect key="frame" x="80" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="160" y="0.0" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="2Mu-H3-6FG"/>
                                             <constraint firstAttribute="height" constant="50" id="7kU-JL-qoV"/>
@@ -173,7 +185,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fJo-ZX-43x">
-                                        <rect key="frame" x="160" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="240" y="0.0" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="4mY-6p-GIA"/>
                                             <constraint firstAttribute="width" constant="50" id="Sfu-0O-rpV"/>
@@ -184,27 +196,18 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pb0-LL-mSA">
-                                        <rect key="frame" x="240" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="320" y="0.0" width="50" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="QMt-a7-eFh"/>
                                             <constraint firstAttribute="height" constant="50" id="SI5-on-NiT"/>
                                         </constraints>
-                                        <state key="normal" image="Gear"/>
+                                        <state key="normal" image="gear"/>
                                         <connections>
                                             <segue destination="3bT-mr-56A" kind="presentation" id="9Ja-At-pGY"/>
                                         </connections>
                                     </button>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lok-v9-uql">
-                                <rect key="frame" x="0.0" y="822" width="46" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <connections>
-                                    <action selector="modeChange:" destination="xgx-o1-NJB" eventType="touchUpInside" id="DVi-Xm-cy6"/>
-                                    <action selector="modeChange:" destination="gQc-wf-lSc" eventType="touchUpInside" id="WBB-J9-Aly"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -425,8 +428,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="EraserIcon" width="570" height="563"/>
-        <image name="Gear" width="48" height="47"/>
+        <image name="eraser" width="570" height="563"/>
+        <image name="gear" width="48" height="47"/>
+        <image name="move" width="80" height="80"/>
         <image name="redo" width="512" height="512"/>
         <image name="undo" width="512" height="512"/>
     </resources>

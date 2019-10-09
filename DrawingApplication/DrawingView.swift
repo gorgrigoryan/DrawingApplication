@@ -26,7 +26,7 @@ class DrawingView: UIView {
     
     @IBAction func erase(_ sender: UIButton) {
         color = isDrawing ? UIColor.white : UIColor.black
-        sender.setImage(isDrawing ? UIImage(named: "paintBrush") : UIImage(named: "EraserIcon"), for: .normal)
+        sender.setImage(isDrawing ? UIImage(named: "brush") : UIImage(named: "eraser"), for: .normal)
         isDrawing = !isDrawing
     }
     
@@ -62,7 +62,7 @@ class DrawingView: UIView {
     }
     
     
-    @IBAction func modeChange(_ sender: UIButton) {
+    @IBAction func changeMode(_ sender: UIButton) {
         let condition = appMode == Mode.move
         appMode = condition ? .draw : .move
         setNeedsDisplay()
